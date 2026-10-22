@@ -22,3 +22,20 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 replay_pid*
+
+# IDE and Editor files
+.idea/
+*.iml
+.vscode/
+
+# Frontend dependencies and production output
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.*
+!frontend/.env.example
+
+# Backend build output and local configuration
+backend/target/
+backend/.env
+backend/src/main/resources/application-local.yml
