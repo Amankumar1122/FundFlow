@@ -13,6 +13,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+
   const submit = async (event) => {
     event.preventDefault()
     setError('')
@@ -20,24 +21,113 @@ export default function Login() {
     try {
       const signedIn = login(email, password)
       navigate(location.state?.from?.pathname || (signedIn.role === 'admin' ? '/admin' : '/dashboard'), { replace: true })
-    } catch (err) { setError(err.message); notify(err.message, 'error') } finally { setLoading(false) }
+    } catch (err) {
+      setError(err.message)
+      notify(err.message, 'error')
+    } finally {
+      setLoading(false)
+    }
   }
+
   return (
-    <div className="grid min-h-[calc(100vh-74px)] lg:grid-cols-2">
-      <div className="hidden bg-forest p-12 text-white lg:flex lg:flex-col lg:justify-between"><Link to="/" className="flex items-center gap-2 font-display text-xl font-extrabold"><HeartHandshake className="text-lime" />FundFlow</Link><div className="max-w-lg"><p className="text-xs font-bold uppercase tracking-[.2em] text-lime">A little good goes a long way</p><h1 className="mt-5 font-display text-5xl font-extrabold leading-tight">Welcome back to the good you do.</h1><p className="mt-5 text-base leading-8 text-white/70">Your community is building something meaningful. Pick up where you left off.</p></div><p className="text-xs text-white/45">FundFlow demo experience · No real money or secure authentication</p></div>
-      <div className="flex items-center justify-center px-5 py-12 sm:px-8"><div className="w-full max-w-md">
-        <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-muted hover:text-forest"><ArrowLeft size={16} /> Back home</Link>
-        <div className="mt-8"><p className="text-xs font-bold uppercase tracking-[.18em] text-forest">Your community awaits</p><h2 className="mt-3 font-display text-3xl font-extrabold text-ink">Good to see you again.</h2><p className="mt-2 text-sm text-muted">Log in to continue your FundFlow demo experience.</p></div>
-        <form onSubmit={submit} className="mt-7 space-y-5">
-          {error && <div role="alert" className="rounded-xl bg-rose-50 px-4 py-3 text-sm text-rose-700">{error}</div>}
-          <FormField id="email" label="Email address" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" autoComplete="email" />
-          <FormField id="password" label="Password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} placeholder="At least 8 characters" autoComplete="current-password" />
-          <div className="flex items-start gap-2 rounded-xl bg-paper p-3 text-xs leading-5 text-muted"><LockKeyhole size={15} className="mt-0.5 shrink-0 text-forest" />Demo only. Use any registered email and a password. The preloaded admin demo account is <strong>admin@fundflow.demo</strong>.</div>
-          <Button type="submit" className="w-full" loading={loading}>Log in to FundFlow</Button>
-        </form>
-        <p className="mt-6 text-center text-sm text-muted">New to FundFlow? <Link to="/register" className="font-bold text-forest hover:underline">Create an account</Link></p>
-        <div className="mt-8 flex items-center justify-center gap-4 text-xs text-muted"><span className="flex items-center gap-1"><Mail size={14} /> No email verification</span><span>·</span><span>Never use a real password</span></div>
-      </div></div>
+    <div className="grid min-h-[calc(100vh-65px)] lg:grid-cols-2">
+      {/* Enterprise Left Showcase Pane */}
+      <div className="hidden bg-[#101820] p-12 text-white lg:flex lg:flex-col lg:justify-between border-r border-white/10">
+        <Link to="/" className="flex items-center gap-2.5">
+          <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#245bdb] text-white">
+            <HeartHandshake size={18} />
+          </span>
+          <span className="font-sans text-base font-extrabold tracking-tight text-white">FundFlow</span>
+        </Link>
+
+        <div className="max-w-md">
+          <div className="inline-flex items-center gap-2 rounded-md bg-white/10 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#245bdb]">
+            Enterprise Access
+          </div>
+          <h1 className="mt-4 text-3xl font-extrabold leading-tight text-white">
+            Transparent community crowdfunding console.
+          </h1>
+          <p className="mt-3 text-xs leading-6 text-slate-300">
+            Log in to manage community campaigns, track incoming contributions, or moderate submitted platform initiatives.
+          </p>
+
+          <div className="mt-6 space-y-2.5 border-t border-white/10 pt-5 text-xs text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#245bdb]" />
+              <span>Stateless JWT authentication (Spring Security 6)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#245bdb]" />
+              <span>Role-based access control (Admin & User workflows)</span>
+            </div>
+          </div>
+        </div>
+
+        <p className="text-[11px] text-slate-500">FundFlow Platform Demonstration • Evaluation Environment</p>
+      </div>
+
+      {/* Right Login Card */}
+      <div className="flex items-center justify-center px-4 py-12 sm:px-6">
+        <div className="w-full max-w-sm rounded-xl border border-[#d8e3f0] bg-white p-7 shadow-card">
+          <Link to="/" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#667085] hover:text-[#245bdb]">
+            <ArrowLeft size={14} /> Back to home
+          </Link>
+
+          <div className="mt-5">
+            <p className="text-xs font-bold uppercase tracking-wider text-[#245bdb]">Identity Authentication</p>
+            <h2 className="mt-1 text-xl font-extrabold text-[#101820]">Good to see you again.</h2>
+            <p className="mt-1 text-xs text-[#667085]">Sign in to access your dashboard controls.</p>
+          </div>
+
+          <form onSubmit={submit} className="mt-6 space-y-4">
+            {error && (
+              <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700">
+                {error}
+              </div>
+            )}
+
+            <FormField
+              id="email"
+              label="Email address"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              autoComplete="email"
+            />
+
+            <FormField
+              id="password"
+              label="Password"
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              autoComplete="current-password"
+            />
+
+            <div className="flex items-start gap-2 rounded-lg border border-[#d8e3f0] bg-[#eef3fc] p-3 text-[11px] leading-4 text-[#245bdb]">
+              <LockKeyhole size={14} className="mt-0.5 shrink-0" />
+              <div>
+                Demo admin credentials: <strong className="font-bold">admin@fundflow.demo</strong> (password: <strong>admin123</strong>).
+              </div>
+            </div>
+
+            <Button type="submit" className="w-full" loading={loading}>
+              Log in to FundFlow
+            </Button>
+          </form>
+
+          <p className="mt-5 text-center text-xs text-[#667085]">
+            New to FundFlow?{' '}
+            <Link to="/register" className="font-bold text-[#245bdb] hover:underline">
+              Create an account
+            </Link>
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

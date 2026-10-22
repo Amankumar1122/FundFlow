@@ -43,26 +43,26 @@ export default function Explore() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
       <div className="max-w-2xl">
-        <p className="text-xs font-bold uppercase tracking-wider text-forest">Discover initiatives</p>
-        <h1 className="mt-1 font-display text-2xl font-bold tracking-tight text-ink sm:text-3xl lg:text-4xl">
+        <p className="text-xs font-bold uppercase tracking-wider text-[#245bdb]">Discover initiatives</p>
+        <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-[#101820] sm:text-3xl lg:text-4xl">
           Explore campaigns
         </h1>
-        <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
-          Browse verified community causes, filter by area of impact, and support initiatives that matter.
+        <p className="mt-2 text-xs leading-relaxed text-[#667085] sm:text-sm">
+          Browse verified community causes, filter by area of impact, and support initiatives with transparent financial targets.
         </p>
       </div>
 
-      <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-xs sm:p-5">
+      <div className="mt-6 rounded-xl border border-[#d8e3f0] bg-white p-4 shadow-2xs sm:p-5">
         <div className="grid gap-4 md:grid-cols-[1fr_200px]">
           <label className="relative block">
             <span className="sr-only">Search campaigns</span>
-            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+            <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#667085]" />
             <input
               aria-label="Search campaigns"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search by cause, keyword, or location..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-10 pr-4 text-xs text-ink outline-none transition focus:border-forest focus:bg-white focus:ring-2 focus:ring-forest/15"
+              className="w-full rounded-lg border border-[#d8e3f0] bg-[#f5f7fa] py-2 pl-10 pr-4 text-xs text-[#101820] outline-none transition focus:border-[#245bdb] focus:bg-white focus:ring-2 focus:ring-[#245bdb]/15"
             />
           </label>
           <FormField
@@ -75,18 +75,18 @@ export default function Explore() {
           />
         </div>
 
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-slate-100 pt-3.5">
-          <span className="mr-1 flex items-center gap-1 text-xs font-semibold text-slate-500">
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 border-t border-[#e9eef2] pt-3.5">
+          <span className="mr-1 flex items-center gap-1 text-xs font-semibold text-[#667085]">
             <SlidersHorizontal size={13} /> Category:
           </span>
           {categories.map((item) => (
             <button
               key={item}
               onClick={() => updateCategory(item)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`rounded-lg px-3 py-1 text-xs font-semibold transition-colors ${
                 category === item
-                  ? 'bg-forest text-white shadow-xs'
-                  : 'border border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:text-ink'
+                  ? 'bg-[#245bdb] text-white shadow-2xs'
+                  : 'border border-[#d8e3f0] bg-white text-[#667085] hover:border-[#cbd5e1] hover:text-[#101820]'
               }`}
             >
               {item}
@@ -96,8 +96,8 @@ export default function Explore() {
       </div>
 
       <div className="mb-4 mt-6 flex items-center justify-between">
-        <p className="text-xs text-muted" aria-live="polite">
-          Showing <strong className="text-ink tabular-nums">{results.length}</strong> {results.length === 1 ? 'campaign' : 'campaigns'}
+        <p className="text-xs text-[#667085]" aria-live="polite">
+          Showing <strong className="text-[#101820] tabular-nums">{results.length}</strong> {results.length === 1 ? 'campaign' : 'campaigns'}
         </p>
       </div>
 

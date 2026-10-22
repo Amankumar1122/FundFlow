@@ -1,21 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #0f172a;
-  --color-muted: #64748b;
-  --color-paper: #f8fafc;
-  --color-forest: #0f766e;
-  --color-mint: #f0fdfa;
-  --color-lime: #ccfbf1;
-  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-display: "Plus Jakarta Sans", "Inter", sans-serif;
-  --shadow-soft: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  --color-ink: #101820;
+  --color-muted: #667085;
+  --color-paper: #f5f7fa;
+  --color-forest: #245bdb;
+  --color-mint: #eef3fc;
+  --color-lime: #d8e3f0;
+  --color-techblue: #245bdb;
+  --color-techblue-hover: #1d4ed8;
+  --color-techblue-dark: #1e3a8a;
+  --color-midnight: #101820;
+  --color-surface-grey: #e9eef2;
+  --color-border-subtle: #d8e3f0;
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --shadow-soft: 0 1px 3px 0 rgba(16, 24, 32, 0.05), 0 1px 2px 0 rgba(16, 24, 32, 0.03);
+  --shadow-card: 0 1px 3px 0 rgba(16, 24, 32, 0.04), 0 4px 12px -2px rgba(16, 24, 32, 0.05);
 }
 
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: #0f172a;
-  background: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  color: #101820;
+  background: #f5f7fa;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -43,8 +50,8 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #f5f7fa;
+  color: #101820;
 }
 
 button,
@@ -59,7 +66,7 @@ a:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-  outline: 2px solid #0f766e;
+  outline: 2px solid #245bdb;
   outline-offset: 2px;
 }
 
@@ -78,9 +85,9 @@ button:active:not(:disabled) {
 
 .reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 500ms var(--motion-ease) var(--reveal-delay, 0ms),
-              transform 500ms var(--motion-ease) var(--reveal-delay, 0ms);
+  transform: translateY(10px);
+  transition: opacity 400ms var(--motion-ease) var(--reveal-delay, 0ms),
+              transform 400ms var(--motion-ease) var(--reveal-delay, 0ms);
 }
 
 .reveal.is-visible {
@@ -89,13 +96,13 @@ button:active:not(:disabled) {
 }
 
 .hero-enter {
-  animation: hero-enter 500ms var(--motion-ease) both;
+  animation: hero-enter 450ms var(--motion-ease) both;
 }
 
-.hero-enter-1 { animation-delay: 30ms; }
-.hero-enter-2 { animation-delay: 80ms; }
-.hero-enter-3 { animation-delay: 140ms; }
-.hero-enter-4 { animation-delay: 200ms; }
+.hero-enter-1 { animation-delay: 20ms; }
+.hero-enter-2 { animation-delay: 60ms; }
+.hero-enter-3 { animation-delay: 110ms; }
+.hero-enter-4 { animation-delay: 160ms; }
 
 .stat-item {
   position: relative;
@@ -107,12 +114,12 @@ button:active:not(:disabled) {
   bottom: 0;
   left: -2px;
   width: 2px;
-  border-radius: 2px;
-  background: #0f766e;
+  border-radius: 1px;
+  background: #245bdb;
   content: "";
-  transform: scaleY(0.35);
+  transform: scaleY(0.4);
   transform-origin: center;
-  transition: transform 500ms var(--motion-ease) var(--reveal-delay, 0ms);
+  transition: transform 400ms var(--motion-ease) var(--reveal-delay, 0ms);
 }
 
 .stat-item.is-visible::before {
@@ -121,7 +128,7 @@ button:active:not(:disabled) {
 
 .progress-fill {
   transform-origin: left center;
-  transition: transform 600ms var(--motion-ease);
+  transition: transform 500ms var(--motion-ease);
 }
 
 .progress-fill:not(.is-visible) {
@@ -133,22 +140,22 @@ button:active:not(:disabled) {
 }
 
 .category-tile:focus-visible {
-  outline: 2px solid #0f766e;
+  outline: 2px solid #245bdb;
   outline-offset: 2px;
 }
 
 .testimonial-panel {
-  transition: transform 250ms var(--motion-ease), border-color 250ms ease, box-shadow 250ms ease;
+  transition: transform 200ms var(--motion-ease), border-color 200ms ease, box-shadow 200ms ease;
 }
 
 .testimonial-panel:hover {
   transform: translateY(-2px);
   border-color: #cbd5e1;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.05);
+  box-shadow: 0 4px 12px -2px rgba(16, 24, 32, 0.05);
 }
 
 @keyframes hero-enter {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -196,6 +203,6 @@ button:active:not(:disabled) {
 }
 
 ::selection {
-  color: #0f172a;
-  background: #ccfbf1;
+  color: #ffffff;
+  background: #245bdb;
 }

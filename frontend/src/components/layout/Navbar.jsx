@@ -1,12 +1,12 @@
-import { ArrowUpRight, HeartHandshake, Menu, UserRound, X, CheckCircle2 } from 'lucide-react'
+import { ArrowUpRight, HeartHandshake, Menu, UserRound, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { useApp } from '../../context/AppContext'
 import Button from '../common/Button'
 
 const navLink = ({ isActive }) =>
-  `text-sm font-medium transition-colors hover:text-forest ${
-    isActive ? 'text-forest font-semibold' : 'text-slate-600'
+  `text-xs font-semibold uppercase tracking-wider transition-colors hover:text-[#245bdb] ${
+    isActive ? 'text-[#245bdb] font-bold' : 'text-[#667085]'
   }`
 
 export default function Navbar() {
@@ -16,7 +16,7 @@ export default function Navbar() {
   const closeMenu = () => setOpen(false)
 
   useEffect(() => {
-    const updateScroll = () => setScrolled(window.scrollY > 10)
+    const updateScroll = () => setScrolled(window.scrollY > 8)
     updateScroll()
     window.addEventListener('scroll', updateScroll, { passive: true })
     return () => window.removeEventListener('scroll', updateScroll)
@@ -24,45 +24,46 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-40 border-b transition-all duration-200 ${
+      className={`sticky top-0 z-40 border-b transition-all duration-150 ${
         scrolled
-          ? 'border-slate-200 bg-white/95 shadow-xs backdrop-blur-md'
-          : 'border-slate-200/80 bg-white/80 backdrop-blur-sm'
+          ? 'border-[#d8e3f0] bg-white/95 shadow-2xs backdrop-blur-md'
+          : 'border-[#d8e3f0] bg-white'
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-8">
           <Link to="/" onClick={closeMenu} className="flex items-center gap-2.5">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-forest text-white shadow-xs">
-              <HeartHandshake size={20} />
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#245bdb] text-white shadow-xs">
+              <HeartHandshake size={18} />
             </span>
-            <span className="font-display text-lg font-bold tracking-tight text-ink">
-              Fund<span className="text-forest">Flow</span>
+            <span className="font-sans text-base font-extrabold tracking-tight text-[#101820]">
+              Fund<span className="text-[#245bdb]">Flow</span>
             </span>
           </Link>
-          <nav className="hidden items-center gap-6 md:flex" aria-label="Main navigation">
+          <nav className="hidden items-center gap-7 md:flex" aria-label="Main navigation">
             <NavLink to="/explore" className={navLink}>Explore</NavLink>
-            <NavLink to="/about" className={navLink}>Our story</NavLink>
+            <NavLink to="/about" className={navLink}>Our Story</NavLink>
             <NavLink to="/contact" className={navLink}>Contact</NavLink>
           </nav>
         </div>
 
-        <div className="hidden items-center gap-3 md:flex">
+        <div className="hidden items-center gap-3.5 md:flex">
           {backendOnline && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-medium text-emerald-700 border border-emerald-200">
-              <CheckCircle2 size={10} /> Live API
+            <span className="inline-flex items-center gap-1.5 rounded-md bg-[#eef3fc] px-2.5 py-1 text-[11px] font-semibold text-[#245bdb] border border-[#d8e3f0]">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live API</span>
             </span>
           )}
           {user ? (
             <>
               <Link
                 to={user.role === 'admin' ? '/admin' : '/dashboard'}
-                className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors"
+                className="flex items-center gap-1.5 rounded-lg border border-[#d8e3f0] bg-white px-3 py-1.5 text-xs font-semibold text-[#101820] hover:bg-[#f5f7fa] transition-colors"
               >
-                <UserRound size={15} className="text-slate-500" />
+                <UserRound size={14} className="text-[#667085]" />
                 <span>{user.name.split(' ')[0]}</span>
                 {user.role === 'admin' && (
-                  <span className="rounded bg-teal-100 px-1 py-0.2 text-[9px] font-bold uppercase text-teal-800">
+                  <span className="rounded bg-[#eef3fc] px-1 py-0.2 text-[9px] font-bold uppercase text-[#245bdb] border border-[#d8e3f0]">
                     Admin
                   </span>
                 )}
@@ -73,7 +74,7 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link to="/login" className="px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-forest transition-colors">
+              <Link to="/login" className="px-3 py-1.5 text-xs font-semibold text-[#667085] hover:text-[#101820] transition-colors">
                 Log in
               </Link>
               <Link to="/register">
@@ -90,14 +91,14 @@ export default function Navbar() {
           aria-label={open ? 'Close menu' : 'Open menu'}
           aria-expanded={open}
           onClick={() => setOpen(!open)}
-          className="grid h-9 w-9 place-items-center rounded-lg text-slate-700 hover:bg-slate-100 md:hidden"
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#d8e3f0] text-[#101820] hover:bg-[#f5f7fa] md:hidden"
         >
-          {open ? <X size={20} /> : <Menu size={20} />}
+          {open ? <X size={18} /> : <Menu size={18} />}
         </button>
       </div>
 
       {open && (
-        <nav className="border-t border-slate-200 bg-white px-4 py-4 md:hidden" aria-label="Mobile navigation">
+        <nav className="border-t border-[#d8e3f0] bg-white px-4 py-4 md:hidden" aria-label="Mobile navigation">
           <div className="flex flex-col gap-1">
             {[
               ['Explore campaigns', '/explore'],
@@ -109,21 +110,21 @@ export default function Navbar() {
                 key={to}
                 to={to}
                 className={({ isActive }) =>
-                  `rounded-lg px-3 py-2 text-sm font-medium ${
-                    isActive ? 'bg-teal-50 text-forest font-semibold' : 'text-slate-700 hover:bg-slate-50'
+                  `rounded-lg px-3 py-2 text-sm font-semibold ${
+                    isActive ? 'bg-[#eef3fc] text-[#245bdb]' : 'text-[#667085] hover:bg-[#f5f7fa] hover:text-[#101820]'
                   }`
                 }
               >
                 {label}
               </NavLink>
             ))}
-            <div className="my-2 border-t border-slate-100" />
+            <div className="my-2 border-t border-[#d8e3f0]" />
             {user ? (
               <>
                 <Link
                   onClick={closeMenu}
                   to={user.role === 'admin' ? '/admin' : '/dashboard'}
-                  className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg px-3 py-2 text-sm font-semibold text-[#101820] hover:bg-[#f5f7fa]"
                 >
                   My dashboard
                 </Link>
@@ -142,7 +143,7 @@ export default function Navbar() {
                 <Link
                   onClick={closeMenu}
                   to="/login"
-                  className="rounded-lg px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                  className="rounded-lg px-3 py-2 text-sm font-semibold text-[#101820] hover:bg-[#f5f7fa]"
                 >
                   Log in
                 </Link>

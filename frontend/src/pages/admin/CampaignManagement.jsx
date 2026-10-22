@@ -27,7 +27,12 @@ export default function CampaignManagement() {
     { value: 'paused', label: 'Paused' },
   ]
   const labels = { pending: 'Pending', approved: 'Live', rejected: 'Rejected', paused: 'Paused' }
-  const styles = { pending: 'bg-amber-100 text-amber-800', approved: 'bg-emerald-100 text-forest', rejected: 'bg-rose-100 text-rose-700', paused: 'bg-slate-100 text-slate-600' }
+  const styles = {
+    pending: 'bg-amber-50 text-amber-700 border border-amber-200',
+    approved: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+    rejected: 'bg-rose-50 text-rose-700 border border-rose-200',
+    paused: 'bg-slate-50 text-slate-700 border border-slate-200',
+  }
 
   // Close 3-dot menu on outside click
   useEffect(() => {
@@ -72,9 +77,9 @@ export default function CampaignManagement() {
     <div>
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
         <div>
-          <p className="text-xs font-bold uppercase tracking-[.15em] text-forest">Keep things moving</p>
-          <h1 className="mt-2 font-display text-3xl font-extrabold text-ink">Campaign management</h1>
-          <p className="mt-2 text-sm text-muted">Review submissions, moderate visibility, or delete campaigns.</p>
+          <p className="text-xs font-bold uppercase tracking-wider text-[#245bdb]">Moderation Console</p>
+          <h1 className="mt-1 text-2xl font-extrabold text-[#101820]">Campaign management</h1>
+          <p className="mt-1 text-xs text-[#667085]">Review submissions, moderate campaign states, or delete initiatives.</p>
         </div>
       </div>
 
@@ -82,38 +87,38 @@ export default function CampaignManagement() {
       <div className="mt-6 grid gap-3 sm:grid-cols-[1fr_200px]">
         <label className="relative block">
           <span className="sr-only">Search campaigns</span>
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#667085]" />
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search title or organizer"
-            className="w-full rounded-xl border border-slate-200 bg-white py-3 pl-10 pr-3 text-sm outline-none focus:border-forest"
+            className="w-full rounded-lg border border-[#d8e3f0] bg-white py-2 pl-10 pr-3 text-xs text-[#101820] outline-none focus:border-[#245bdb] focus:ring-2 focus:ring-[#245bdb]/15"
           />
         </label>
         <FormField id="filter-status" label="" as="select" value={status} onChange={(event) => setStatus(event.target.value)} options={setStatusChoices} />
       </div>
 
       {/* Batch Selection Banner */}
-      <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white px-4 py-3 text-xs">
-        <label className="flex cursor-pointer items-center gap-2 font-semibold text-ink">
+      <div className="mt-3.5 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-[#d8e3f0] bg-white px-4 py-2.5 text-xs">
+        <label className="flex cursor-pointer items-center gap-2 font-semibold text-[#101820]">
           <input
             type="checkbox"
             checked={allShownSelected}
             onChange={toggleSelectAll}
-            className="h-4 w-4 rounded border-slate-300 text-forest focus:ring-forest"
+            className="h-3.5 w-3.5 rounded border-slate-300 text-[#245bdb] focus:ring-[#245bdb]"
           />
           <span>Select all shown ({shown.length})</span>
         </label>
 
         {selectedIds.length > 0 && (
           <div className="flex items-center gap-3">
-            <span className="font-bold text-forest">{selectedIds.length} campaign{selectedIds.length > 1 ? 's' : ''} selected</span>
+            <span className="font-bold text-[#245bdb]">{selectedIds.length} campaign{selectedIds.length > 1 ? 's' : ''} selected</span>
             <button
               type="button"
               onClick={() => setIsBatchDeleting(true)}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-rose-50 px-3 py-1.5 font-bold text-rose-700 hover:bg-rose-100"
+              className="inline-flex items-center gap-1 rounded-md bg-rose-50 px-2.5 py-1 text-xs font-bold text-rose-700 hover:bg-rose-100 border border-rose-200"
             >
-              <Trash2 size={13} /> Delete selected
+              <Trash2 size={12} /> Delete selected
             </button>
           </div>
         )}
@@ -128,22 +133,29 @@ export default function CampaignManagement() {
           return (
             <article
               key={campaign.id}
-              className={`relative rounded-2xl border bg-white p-4 transition-colors sm:p-5 ${
-                isSelected ? 'border-forest/50 bg-mint/10' : 'border-slate-200'
+              className={`relative rounded-xl border bg-white p-4 transition-colors ${
+                isSelected ? 'border-[#245bdb]/50 bg-[#eef3fc]/30' : 'border-[#d8e3f0]'
               }`}
             >
               <div className="flex flex-col gap-4 sm:flex-row">
                 {/* Selection Checkbox & Thumbnail */}
                 <div className="relative shrink-0 sm:w-36">
-                  <label className="absolute left-2.5 top-2.5 z-10 grid h-6 w-6 place-items-center rounded-md bg-white/90 shadow-sm backdrop-blur-sm cursor-pointer">
+                  <label className="absolute left-2 top-2 z-10 grid h-5 w-5 place-items-center rounded bg-white/90 shadow-2xs backdrop-blur-sm cursor-pointer">
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() => toggleSelect(campaign.id)}
-                      className="h-4 w-4 rounded border-slate-300 text-forest focus:ring-forest"
+                      className="h-3.5 w-3.5 rounded border-slate-300 text-[#245bdb] focus:ring-[#245bdb]"
                     />
                   </label>
-                  <img src={campaign.image} alt="" className="h-36 w-full rounded-xl object-cover sm:h-24 sm:w-36" />
+                  <img
+                    src={campaign.image}
+                    alt=""
+                    className="h-32 w-full rounded-lg object-cover sm:h-24 sm:w-36 border border-[#d8e3f0]"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=900&q=80'
+                    }}
+                  />
                 </div>
 
                 {/* Content */}
@@ -151,13 +163,13 @@ export default function CampaignManagement() {
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h2 className="font-display text-base font-extrabold text-ink">{campaign.title}</h2>
-                        <span className={`rounded-full px-2.5 py-1 text-[10px] font-bold ${styles[campaign.status] || styles.paused}`}>
+                        <h2 className="text-sm font-bold text-[#101820]">{campaign.title}</h2>
+                        <span className={`rounded-md px-2 py-0.5 text-[10px] font-bold ${styles[campaign.status] || styles.paused}`}>
                           {labels[campaign.status] || campaign.status}
                         </span>
                       </div>
-                      <p className="mt-1 text-xs text-muted">
-                        By <strong className="text-ink">{campaign.organizer}</strong> · {campaign.category} · Goal {formatCurrency(campaign.goal)} · Raised {formatCurrency(campaign.raised)}
+                      <p className="mt-1 text-xs text-[#667085]">
+                        By <strong className="text-[#101820]">{campaign.organizer}</strong> • {campaign.category} • Goal {formatCurrency(campaign.goal)} • Raised {formatCurrency(campaign.raised)}
                       </p>
                     </div>
 
@@ -167,20 +179,20 @@ export default function CampaignManagement() {
                         type="button"
                         aria-label={`Options for ${campaign.title}`}
                         onClick={() => setOpenMenuId((current) => (current === campaign.id ? null : campaign.id))}
-                        className="grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-600 hover:border-forest/40 hover:bg-paper hover:text-forest"
+                        className="grid h-7 w-7 place-items-center rounded-md border border-[#d8e3f0] text-[#667085] hover:border-[#245bdb]/40 hover:bg-[#f5f7fa] hover:text-[#245bdb]"
                       >
-                        <MoreVertical size={16} />
+                        <MoreVertical size={14} />
                       </button>
 
                       {/* 3-Dot Dropdown Menu */}
                       {isMenuOpen && (
-                        <div className="absolute right-0 top-10 z-30 w-44 rounded-xl border border-slate-200 bg-white py-1.5 shadow-soft">
+                        <div className="absolute right-0 top-8 z-30 w-44 rounded-lg border border-[#d8e3f0] bg-white py-1 shadow-card">
                           <Link
                             to={`/campaigns/${campaign.id}`}
                             onClick={() => setOpenMenuId(null)}
-                            className="flex items-center gap-2 px-3.5 py-2 text-xs font-semibold text-slate-700 hover:bg-paper"
+                            className="flex items-center gap-2 px-3 py-1.5 text-xs font-semibold text-[#101820] hover:bg-[#f5f7fa]"
                           >
-                            <ExternalLink size={14} className="text-muted" /> View public page
+                            <ExternalLink size={13} className="text-[#667085]" /> View public page
                           </Link>
 
                           {campaign.status !== 'approved' && (
@@ -190,9 +202,9 @@ export default function CampaignManagement() {
                                 setCampaignStatus(campaign.id, 'approved')
                                 setOpenMenuId(null)
                               }}
-                              className="flex w-full items-center gap-2 px-3.5 py-2 text-left text-xs font-semibold text-forest hover:bg-mint/30"
+                              className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs font-semibold text-[#245bdb] hover:bg-[#eef3fc]"
                             >
-                              <Check size={14} /> Approve campaign
+                              <Check size={13} /> Approve campaign
                             </button>
                           )}
 
@@ -203,13 +215,13 @@ export default function CampaignManagement() {
                                 setCampaignStatus(campaign.id, 'paused')
                                 setOpenMenuId(null)
                               }}
-                              className="flex w-full items-center gap-2 px-3.5 py-2 text-left text-xs font-semibold text-amber-700 hover:bg-amber-50"
+                              className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs font-semibold text-amber-700 hover:bg-amber-50"
                             >
-                              <Check size={14} /> Pause campaign
+                              <Check size={13} /> Pause campaign
                             </button>
                           )}
 
-                          <div className="my-1 border-t border-slate-100" />
+                          <div className="my-1 border-t border-[#e9eef2]" />
 
                           <button
                             type="button"
@@ -217,24 +229,24 @@ export default function CampaignManagement() {
                               setOpenMenuId(null)
                               setDeleting(campaign)
                             }}
-                            className="flex w-full items-center gap-2 px-3.5 py-2 text-left text-xs font-bold text-rose-700 hover:bg-rose-50"
+                            className="flex w-full items-center gap-2 px-3 py-1.5 text-left text-xs font-bold text-rose-700 hover:bg-rose-50"
                           >
-                            <Trash2 size={14} /> Delete campaign
+                            <Trash2 size={13} /> Delete campaign
                           </button>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted">{campaign.description}</p>
+                  <p className="mt-1.5 line-clamp-2 text-xs leading-relaxed text-[#667085]">{campaign.description}</p>
 
                   {/* Primary Quick Actions Bar */}
                   <div className="mt-3 flex flex-wrap items-center gap-2">
                     <Link
                       to={`/campaigns/${campaign.id}`}
-                      className="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-semibold text-ink hover:bg-paper"
+                      className="inline-flex items-center gap-1 rounded-md border border-[#d8e3f0] px-2.5 py-1 text-[11px] font-semibold text-[#101820] hover:bg-[#f5f7fa]"
                     >
-                      View details <ExternalLink size={12} />
+                      View details <ExternalLink size={11} />
                     </Link>
 
                     {campaign.status === 'pending' ? (
@@ -242,23 +254,23 @@ export default function CampaignManagement() {
                         <button
                           type="button"
                           onClick={() => setCampaignStatus(campaign.id, 'approved')}
-                          className="inline-flex items-center gap-1 rounded-lg bg-forest px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#11563e]"
+                          className="inline-flex items-center gap-1 rounded-md bg-[#245bdb] px-2.5 py-1 text-[11px] font-bold text-white hover:bg-[#1d4ed8]"
                         >
-                          <Check size={13} /> Approve
+                          <Check size={12} /> Approve
                         </button>
                         <button
                           type="button"
                           onClick={() => setRejecting(campaign)}
-                          className="inline-flex items-center gap-1 rounded-lg bg-rose-50 px-3 py-1.5 text-[11px] font-bold text-rose-700 hover:bg-rose-100"
+                          className="inline-flex items-center gap-1 rounded-md bg-rose-50 border border-rose-200 px-2.5 py-1 text-[11px] font-bold text-rose-700 hover:bg-rose-100"
                         >
-                          <X size={13} /> Reject
+                          <X size={12} /> Reject
                         </button>
                       </>
                     ) : campaign.status === 'approved' ? (
                       <button
                         type="button"
                         onClick={() => setCampaignStatus(campaign.id, 'paused')}
-                        className="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-bold text-muted hover:bg-paper"
+                        className="rounded-md border border-[#d8e3f0] px-2.5 py-1 text-[11px] font-semibold text-[#667085] hover:bg-[#f5f7fa]"
                       >
                         Pause
                       </button>
@@ -266,7 +278,7 @@ export default function CampaignManagement() {
                       <button
                         type="button"
                         onClick={() => setCampaignStatus(campaign.id, campaign.status === 'rejected' ? 'pending' : 'approved')}
-                        className="rounded-lg bg-forest px-3 py-1.5 text-[11px] font-bold text-white"
+                        className="rounded-md bg-[#245bdb] px-2.5 py-1 text-[11px] font-bold text-white hover:bg-[#1d4ed8]"
                       >
                         {campaign.status === 'rejected' ? 'Reopen review' : 'Resume campaign'}
                       </button>
@@ -276,10 +288,10 @@ export default function CampaignManagement() {
                     <button
                       type="button"
                       onClick={() => setDeleting(campaign)}
-                      className="inline-flex items-center gap-1 rounded-lg border border-rose-200 px-2.5 py-1.5 text-[11px] font-semibold text-rose-700 hover:bg-rose-50"
+                      className="inline-flex items-center gap-1 rounded-md border border-rose-200 px-2 py-1 text-[11px] font-semibold text-rose-700 hover:bg-rose-50"
                       title="Delete campaign"
                     >
-                      <Trash2 size={12} /> Delete
+                      <Trash2 size={11} /> Delete
                     </button>
                   </div>
                 </div>
@@ -289,7 +301,11 @@ export default function CampaignManagement() {
         })}
       </div>
 
-      {!shown.length && <div className="mt-6 rounded-2xl border border-dashed border-slate-300 p-10 text-center text-sm text-muted">No campaigns match these filters.</div>}
+      {!shown.length && (
+        <div className="mt-6 rounded-xl border border-dashed border-[#d8e3f0] p-10 text-center text-xs text-[#667085]">
+          No campaigns match these filters.
+        </div>
+      )}
 
       {/* Reject Confirmation Dialog */}
       <ConfirmationDialog

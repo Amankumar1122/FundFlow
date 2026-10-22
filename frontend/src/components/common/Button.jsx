@@ -2,16 +2,16 @@ import { LoaderCircle } from 'lucide-react'
 
 export default function Button({ children, variant = 'primary', size = 'md', loading = false, className = '', type = 'button', ...props }) {
   const variants = {
-    primary: 'bg-forest text-white hover:bg-[#115e59] shadow-sm active:bg-[#0f4f4b]',
-    secondary: 'border border-slate-200 bg-white text-ink hover:border-slate-300 hover:bg-slate-50 shadow-sm',
-    lime: 'bg-mint text-forest border border-teal-200 hover:bg-teal-100',
-    ghost: 'text-ink/80 hover:text-ink hover:bg-slate-100',
+    primary: 'bg-[#245bdb] text-white hover:bg-[#1d4ed8] active:bg-[#1e40af] shadow-xs',
+    secondary: 'border border-[#d8e3f0] bg-white text-[#101820] hover:bg-[#f5f7fa] hover:border-[#cbd5e1] shadow-2xs',
+    lime: 'bg-[#eef3fc] text-[#245bdb] border border-[#d8e3f0] hover:bg-[#e2ecfa]',
+    ghost: 'text-[#667085] hover:text-[#101820] hover:bg-[#f5f7fa]',
     danger: 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100',
   }
   const sizes = {
     sm: 'px-3 py-1.5 text-xs font-semibold rounded-lg',
-    md: 'px-4 py-2.5 text-sm font-semibold rounded-xl',
-    lg: 'px-5 py-3 text-sm font-semibold rounded-xl',
+    md: 'px-4 py-2 text-sm font-semibold rounded-lg',
+    lg: 'px-5 py-2.5 text-sm font-semibold rounded-lg',
   }
   return (
     <button

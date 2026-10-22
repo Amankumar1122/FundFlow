@@ -16,8 +16,8 @@ export default function FormField({
   const isPassword = type === 'password'
   const computedType = isPassword ? (showPassword ? 'text' : 'password') : type
 
-  const controlClass = `mt-1.5 w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-ink outline-none transition placeholder:text-slate-400 focus:border-forest focus:ring-2 focus:ring-forest/15 disabled:bg-slate-50 disabled:text-slate-400 ${
-    error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/15' : 'border-slate-200 hover:border-slate-300'
+  const controlClass = `mt-1.5 w-full rounded-lg border bg-white px-3.5 py-2 text-sm text-[#101820] outline-none transition placeholder:text-slate-400 focus:border-[#245bdb] focus:ring-2 focus:ring-[#245bdb]/15 disabled:bg-slate-50 disabled:text-slate-400 ${
+    error ? 'border-rose-400 focus:border-rose-500 focus:ring-rose-500/15' : 'border-[#d8e3f0] hover:border-slate-300'
   }`
 
   const errorId = error ? `${id}-error` : undefined
@@ -26,7 +26,7 @@ export default function FormField({
 
   return (
     <div className={`block text-left ${className}`}>
-      <label htmlFor={id} className="block text-xs font-semibold uppercase tracking-wider text-slate-700">
+      <label htmlFor={id} className="block text-xs font-semibold uppercase tracking-wider text-[#667085]">
         {label}
       </label>
 
@@ -49,7 +49,7 @@ export default function FormField({
           id={id}
           aria-invalid={Boolean(error)}
           aria-describedby={ariaDescribedBy}
-          className={`${controlClass} min-h-28 resize-y leading-relaxed`}
+          className={`${controlClass} min-h-24 resize-y leading-relaxed`}
           {...props}
         />
       ) : (
@@ -81,7 +81,7 @@ export default function FormField({
         </span>
       )}
       {hint && !error && (
-        <span id={hintId} className="mt-1 block text-xs text-muted">
+        <span id={hintId} className="mt-1 block text-xs text-[#667085]">
           {hint}
         </span>
       )}
