@@ -168,6 +168,23 @@ export function AppProvider({ children }) {
     return created
   }
 
+  const deleteCampaign = (id) => {
+    updateData((prev) => ({
+      ...prev,
+      campaigns: prev.campaigns.filter((item) => String(item.id) !== String(id)),
+      donations: prev.donations.filter((item) => String(item.campaignId) !== String(id)),
+      activities: prev.activities.filter((item) => !item.text?.includes(String(id))),
+    }))
+    notify('Campaign deleted successfully.')
+
+    if (import.meta.env.MODE !== 'test') {
+      const numId = Number(id)
+      if (Number.isInteger(numId)) {
+        campaignsApi.delete(numId).catch(() => {})
+      }
+    }
+  }
+
   const donate = (campaignId, amount, message = '') => {
     if (!user) throw new Error('Please log in before making a donation.')
     const value = Number(amount)
@@ -248,6 +265,7 @@ export function AppProvider({ children }) {
     register,
     logout,
     createCampaign,
+    deleteCampaign,
     donate,
     updateProfile,
     setCampaignStatus,
@@ -259,6 +277,6 @@ export function AppProvider({ children }) {
 
 export function useApp() {
   const context = useContext(AppContext)
-  if (!context) throw new Error('useApp must be used within AppProvider')
+  if (!context) throw new Error('useApp must be used within an AppProvider')
   return context
 }
