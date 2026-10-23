@@ -72,7 +72,7 @@ export default function Register() {
           </div>
         </div>
 
-        <p className="text-[11px] text-[#667085]">Evaluator Mode • Local browser and Spring Boot session synchronization</p>
+        <p className="text-[11px] text-[#667085]">© FundFlow Inc. • Production Enterprise Platform</p>
       </div>
 
       {/* Right Registration Card */}

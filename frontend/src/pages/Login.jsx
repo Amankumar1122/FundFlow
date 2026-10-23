@@ -1,4 +1,4 @@
-import { ArrowLeft, HeartHandshake, LockKeyhole, Mail } from 'lucide-react'
+import { ArrowLeft, HeartHandshake } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Button from '../components/common/Button'
@@ -67,7 +67,7 @@ export default function Login() {
           </div>
         </div>
 
-        <p className="text-[11px] text-slate-500">Evaluator Mode • Local browser and Spring Boot session synchronization</p>
+        <p className="text-[11px] text-slate-500">© FundFlow Inc. • Production Enterprise Platform</p>
       </div>
 
       {/* Right Login Card */}
@@ -115,29 +115,6 @@ export default function Login() {
               {loading ? 'Authenticating...' : 'Sign in to FundFlow'}
             </Button>
           </form>
-
-          {/* Quick Demo Logins */}
-          <div className="mt-5 border-t border-[#d8e3f0] pt-4">
-            <p className="text-[11px] font-semibold text-[#667085] uppercase tracking-wider mb-2">Evaluator Quick Fill</p>
-            <div className="grid grid-cols-2 gap-2 text-xs">
-              <button
-                type="button"
-                onClick={() => { setEmail('admin@fundflow.demo'); setPassword('admin123') }}
-                className="rounded-lg border border-[#d8e3f0] p-2 text-left hover:bg-slate-50 transition"
-              >
-                <div className="font-bold text-[#101820]">Platform Admin</div>
-                <div className="text-[10px] text-[#667085]">Full privileges</div>
-              </button>
-              <button
-                type="button"
-                onClick={() => { setEmail('maya@example.com'); setPassword('password123') }}
-                className="rounded-lg border border-[#d8e3f0] p-2 text-left hover:bg-slate-50 transition"
-              >
-                <div className="font-bold text-[#101820]">Organizer (Maya)</div>
-                <div className="text-[10px] text-[#667085]">Active campaigns</div>
-              </button>
-            </div>
-          </div>
 
           <p className="mt-6 text-center text-xs text-[#667085]">
             Need a FundFlow account?{' '}
