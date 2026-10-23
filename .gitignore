@@ -28,6 +28,13 @@ replay_pid*
 *.iml
 .vscode/
 
+# Environment files
+.env
+.env.*
+!.env.example
+*.env
+*.env.*
+
 # Frontend dependencies and production output
 frontend/node_modules/
 frontend/dist/
@@ -39,3 +46,6 @@ frontend/.env.*
 backend/target/
 backend/.env
 backend/src/main/resources/application-local.yml
+.neon
+node_modules/
+.env.local
