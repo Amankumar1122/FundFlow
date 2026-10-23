@@ -1,7 +1,11 @@
 import axios from 'axios'
 
+const defaultApiUrl = import.meta.env.PROD
+  ? 'https://fundflow-0vuh.onrender.com/api'
+  : 'http://localhost:8080/api'
+
 export const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8080/api',
+  baseURL: import.meta.env.VITE_API_URL || defaultApiUrl,
   timeout: 12000,
   headers: { 'Content-Type': 'application/json' },
 })

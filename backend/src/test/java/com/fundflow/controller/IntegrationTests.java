@@ -25,8 +25,10 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -224,5 +226,36 @@ class IntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(6)))
                 .andExpect(jsonPath("$.status", is("APPROVED")));
+    }
+
+    @Test
+    @Order(14)
+    void optionsPreflightFromApprovedVercelOriginReturns200AndCorsHeaders() throws Exception {
+        mockMvc.perform(options("/api/auth/register")
+                        .header("Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Access-Control-Request-Headers", "Authorization,Content-Type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app"))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
+    }
+
+    @Test
+    @Order(15)
+    void optionsPreflightForGetCampaignsReturnsCorsHeaders() throws Exception {
+        mockMvc.perform(options("/api/campaigns")
+                        .header("Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app")
+                        .header("Access-Control-Request-Method", "GET"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app"));
+    }
+
+    @Test
+    @Order(16)
+    void optionsPreflightFromUnapprovedOriginDoesNotAllowCors() throws Exception {
+        mockMvc.perform(options("/api/auth/register")
+                        .header("Origin", "https://malicious-unapproved-site.com")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
     }
 }

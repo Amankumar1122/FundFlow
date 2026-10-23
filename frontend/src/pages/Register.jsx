@@ -27,7 +27,7 @@ export default function Register() {
     }
     setLoading(true)
     try {
-      register(fields)
+      await register(fields)
       navigate('/dashboard')
     } catch (err) {
       setError(err.message)

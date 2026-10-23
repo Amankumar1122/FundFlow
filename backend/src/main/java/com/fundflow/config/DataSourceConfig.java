@@ -85,6 +85,11 @@ public class DataSourceConfig {
             ds.setPassword(password);
         }
         ds.setDriverClassName("org.postgresql.Driver");
+        ds.setMaxLifetime(600000L); // 10 minutes
+        ds.setIdleTimeout(300000L);  // 5 minutes
+        ds.setConnectionTimeout(30000L); // 30s
+        ds.setMinimumIdle(1);
+        ds.setMaximumPoolSize(10);
         return ds;
     }
 

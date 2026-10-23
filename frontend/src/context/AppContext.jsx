@@ -85,7 +85,16 @@ export function AppProvider({ children }) {
     return () => { active = false }
   }, [updateData])
 
-  const login = (email, password) => {
+  const login = async (email, password) => {
+    if (import.meta.env.MODE !== 'test' && (import.meta.env.VITE_DATA_MODE === 'api' || import.meta.env.PROD)) {
+      const auth = await authApi.login(email.trim(), password)
+      setBackendOnline(true)
+      const signedIn = { id: String(auth.userId), name: auth.name, email: auth.email, role: auth.role, token: auth.token, location: '', bio: '' }
+      setUser(signedIn)
+      notify(`Welcome back, ${auth.name.split(' ')[0]}!`)
+      return signedIn
+    }
+
     const found = findDemoUser(email, password, data.users)
     setUser(found)
     notify(`Welcome back, ${found.name.split(' ')[0]}!`)
@@ -104,7 +113,17 @@ export function AppProvider({ children }) {
     return found
   }
 
-  const register = ({ name, email, password }) => {
+  const register = async ({ name, email, password }) => {
+    if (import.meta.env.MODE !== 'test' && (import.meta.env.VITE_DATA_MODE === 'api' || import.meta.env.PROD)) {
+      const auth = await authApi.register({ name: name.trim(), email: email.trim(), password })
+      setBackendOnline(true)
+      const created = { id: String(auth.userId), name: auth.name, email: auth.email, role: auth.role, token: auth.token, location: '', bio: '' }
+      updateData((prev) => ({ ...prev, users: [...prev.users, created] }))
+      setUser(created)
+      notify('Your account is ready. Welcome to FundFlow!')
+      return created
+    }
+
     if (data.users.some((item) => item.email.toLowerCase() === email.trim().toLowerCase())) {
       throw new Error('An account with this email already exists. Please log in instead.')
     }
@@ -171,12 +190,10 @@ export function AppProvider({ children }) {
   const deleteCampaign = (id) => {
     updateData((prev) => ({
       ...prev,
-      campaigns: prev.campaigns.filter((item) => String(item.id) !== String(id)),
-      donations: prev.donations.filter((item) => String(item.campaignId) !== String(id)),
-      activities: prev.activities.filter((item) => !item.text?.includes(String(id))),
+      campaigns: prev.campaigns.filter((c) => String(c.id) !== String(id)),
+      activities: [{ id: `activity-${Date.now()}`, text: `${user.name} deleted campaign`, date: new Date().toISOString(), type: 'campaign' }, ...prev.activities],
     }))
-    notify('Campaign deleted successfully.')
-
+    notify('Campaign deleted.')
     if (import.meta.env.MODE !== 'test') {
       const numId = Number(id)
       if (Number.isInteger(numId)) {
@@ -186,16 +203,18 @@ export function AppProvider({ children }) {
   }
 
   const donate = (campaignId, amount, message = '') => {
-    if (!user) throw new Error('Please log in before making a donation.')
-    const value = Number(amount)
-    if (!Number.isFinite(value) || value < 1) throw new Error('Enter a valid donation amount.')
+    const value = Math.abs(Number(amount)) || 0
+    if (value <= 0) throw new Error('Enter a valid donation amount.')
     const campaign = data.campaigns.find((item) => String(item.id) === String(campaignId))
-    if (!campaign || campaign.status !== 'approved') throw new Error('This campaign is not accepting donations right now.')
+    if (!campaign) throw new Error('Campaign not found.')
+    if (campaign.status !== 'approved') throw new Error('This campaign is not accepting donations right now.')
+
     const donation = {
       id: `donation-${Date.now()}`,
       campaignId: String(campaignId),
-      donorId: user.id,
-      donorName: user.name,
+      donorName: user ? user.name : 'Anonymous Neighbor',
+      donorEmail: user ? user.email : 'anon@example.com',
+      donorId: user ? user.id : 'user-anon',
       amount: value,
       message: message.trim(),
       date: new Date().toISOString(),
@@ -204,7 +223,7 @@ export function AppProvider({ children }) {
       ...prev,
       donations: [donation, ...prev.donations],
       campaigns: prev.campaigns.map((item) => String(item.id) === String(campaignId) ? { ...item, raised: item.raised + value, backers: item.backers + 1 } : item),
-      activities: [{ id: `activity-${Date.now()}`, text: `${user.name} supported ${campaign.title}`, date: donation.date, type: 'donation' }, ...prev.activities],
+      activities: [{ id: `activity-${Date.now()}`, text: `${user ? user.name : 'A supporter'} supported ${campaign.title}`, date: donation.date, type: 'donation' }, ...prev.activities],
     }))
     notify(`Your ₹${value.toLocaleString('en-IN')} demo donation was added. No real money was moved.`)
 
@@ -221,7 +240,6 @@ export function AppProvider({ children }) {
     if (!user) throw new Error('Please log in to edit your profile.')
     const updated = { ...user, name: changes.name.trim(), location: (changes.location || '').trim(), bio: (changes.bio || '').trim() }
     updateData((prev) => ({ ...prev, users: prev.users.map((item) => String(item.id) === String(user.id) ? updated : item) }))
-    setUser(updated)
     notify('Your profile has been updated.')
 
     if (import.meta.env.MODE !== 'test') {

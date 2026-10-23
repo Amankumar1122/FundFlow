@@ -19,7 +19,7 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      const signedIn = login(email, password)
+      const signedIn = await login(email, password)
       navigate(location.state?.from?.pathname || (signedIn.role === 'admin' ? '/admin' : '/dashboard'), { replace: true })
     } catch (err) {
       setError(err.message)
@@ -58,71 +58,90 @@ export default function Login() {
             </div>
             <div className="flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-[#245bdb]" />
-              <span>Role-based access control (Admin & User workflows)</span>
+              <span>Spring Data JPA • Hibernate ORM persistence</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#245bdb]" />
+              <span>Fintech-grade audit logging & real-time analytics</span>
             </div>
           </div>
         </div>
 
-        <p className="text-[11px] text-slate-500">FundFlow Platform Demonstration • Evaluation Environment</p>
+        <p className="text-[11px] text-slate-500">Evaluator Mode • Local browser and Spring Boot session synchronization</p>
       </div>
 
       {/* Right Login Card */}
       <div className="flex items-center justify-center px-4 py-12 sm:px-6">
         <div className="w-full max-w-sm rounded-xl border border-[#d8e3f0] bg-white p-7 shadow-card">
-          <Link to="/" className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#667085] hover:text-[#245bdb]">
-            <ArrowLeft size={14} /> Back to home
-          </Link>
-
-          <div className="mt-5">
-            <p className="text-xs font-bold uppercase tracking-wider text-[#245bdb]">Identity Authentication</p>
-            <h2 className="mt-1 text-xl font-extrabold text-[#101820]">Good to see you again.</h2>
-            <p className="mt-1 text-xs text-[#667085]">Sign in to access your dashboard controls.</p>
+          <div className="flex items-center justify-between">
+            <span className="inline-block rounded-md bg-[#eef3fc] px-2.5 py-1 text-[11px] font-bold text-[#245bdb]">
+              Secure Access
+            </span>
+            <Link to="/" className="inline-flex items-center gap-1 text-xs font-medium text-[#667085] hover:text-[#101820]">
+              <ArrowLeft size={13} /> Back
+            </Link>
           </div>
 
-          <form onSubmit={submit} className="mt-6 space-y-4">
-            {error && (
-              <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-700">
-                {error}
-              </div>
-            )}
+          <h2 className="mt-4 font-sans text-xl font-extrabold tracking-tight text-[#101820]">
+            Good to see you again.
+          </h2>
+          <p className="mt-1 text-xs text-[#667085]">Sign in to access your dashboard and saved projects.</p>
 
+          {error && (
+            <div className="mt-4 rounded-lg bg-rose-50 p-3 text-xs font-medium text-rose-700 border border-rose-200">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={submit} className="mt-5 space-y-4">
             <FormField
-              id="email"
               label="Email address"
               type="email"
-              required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@example.com"
-              autoComplete="email"
+              required
+              placeholder="you@domain.com"
             />
-
             <FormField
-              id="password"
               label="Password"
               type="password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Enter your password"
-              autoComplete="current-password"
+              required
+              placeholder="••••••••"
             />
 
-            <div className="flex items-start gap-2 rounded-lg border border-[#d8e3f0] bg-[#eef3fc] p-3 text-[11px] leading-4 text-[#245bdb]">
-              <LockKeyhole size={14} className="mt-0.5 shrink-0" />
-              <div>
-                Demo admin credentials: <strong className="font-bold">admin@fundflow.demo</strong> (password: <strong>admin123</strong>).
-              </div>
-            </div>
-
-            <Button type="submit" className="w-full" loading={loading}>
-              Log in to FundFlow
+            <Button type="submit" variant="primary" className="w-full mt-2" disabled={loading}>
+              {loading ? 'Authenticating...' : 'Sign in to FundFlow'}
             </Button>
           </form>
 
-          <p className="mt-5 text-center text-xs text-[#667085]">
-            New to FundFlow?{' '}
-            <Link to="/register" className="font-bold text-[#245bdb] hover:underline">
+          {/* Quick Demo Logins */}
+          <div className="mt-5 border-t border-[#d8e3f0] pt-4">
+            <p className="text-[11px] font-semibold text-[#667085] uppercase tracking-wider mb-2">Evaluator Quick Fill</p>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <button
+                type="button"
+                onClick={() => { setEmail('admin@fundflow.demo'); setPassword('admin123') }}
+                className="rounded-lg border border-[#d8e3f0] p-2 text-left hover:bg-slate-50 transition"
+              >
+                <div className="font-bold text-[#101820]">Platform Admin</div>
+                <div className="text-[10px] text-[#667085]">Full privileges</div>
+              </button>
+              <button
+                type="button"
+                onClick={() => { setEmail('maya@example.com'); setPassword('password123') }}
+                className="rounded-lg border border-[#d8e3f0] p-2 text-left hover:bg-slate-50 transition"
+              >
+                <div className="font-bold text-[#101820]">Organizer (Maya)</div>
+                <div className="text-[10px] text-[#667085]">Active campaigns</div>
+              </button>
+            </div>
+          </div>
+
+          <p className="mt-6 text-center text-xs text-[#667085]">
+            Need a FundFlow account?{' '}
+            <Link to="/register" className="font-semibold text-[#245bdb] hover:underline">
               Create an account
             </Link>
           </p>
