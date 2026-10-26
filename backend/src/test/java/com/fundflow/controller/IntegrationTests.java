@@ -230,7 +230,42 @@ class IntegrationTests {
 
     @Test
     @Order(14)
-    void optionsPreflightFromApprovedVercelOriginReturns200AndCorsHeaders() throws Exception {
+    void optionsPreflightForLoginFromCurrentProductionVercelOriginReturns200AndCorsHeaders() throws Exception {
+        mockMvc.perform(options("/api/auth/login")
+                        .header("Origin", "https://fundflow-3c0sh4pr9-aman-kumar-s-projects9.vercel.app")
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Access-Control-Request-Headers", "Authorization,Content-Type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://fundflow-3c0sh4pr9-aman-kumar-s-projects9.vercel.app"))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
+    }
+
+    @Test
+    @Order(15)
+    void getCampaignsFromCurrentProductionVercelOriginReturnsCorsHeaders() throws Exception {
+        mockMvc.perform(get("/api/campaigns")
+                        .header("Origin", "https://fundflow-3c0sh4pr9-aman-kumar-s-projects9.vercel.app"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", "https://fundflow-3c0sh4pr9-aman-kumar-s-projects9.vercel.app"))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
+    }
+
+    @Test
+    @Order(16)
+    void optionsPreflightForDynamicPreviewOriginMatchesPattern() throws Exception {
+        String dynamicPreviewOrigin = "https://fundflow-previewxyz999-aman-kumar-s-projects9.vercel.app";
+        mockMvc.perform(options("/api/auth/login")
+                        .header("Origin", dynamicPreviewOrigin)
+                        .header("Access-Control-Request-Method", "POST")
+                        .header("Access-Control-Request-Headers", "Authorization,Content-Type"))
+                .andExpect(status().isOk())
+                .andExpect(header().string("Access-Control-Allow-Origin", dynamicPreviewOrigin))
+                .andExpect(header().string("Access-Control-Allow-Credentials", "true"));
+    }
+
+    @Test
+    @Order(17)
+    void optionsPreflightFromPreviousVercelOriginReturns200AndCorsHeaders() throws Exception {
         mockMvc.perform(options("/api/auth/register")
                         .header("Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app")
                         .header("Access-Control-Request-Method", "POST")
@@ -241,20 +276,19 @@ class IntegrationTests {
     }
 
     @Test
-    @Order(15)
-    void optionsPreflightForGetCampaignsReturnsCorsHeaders() throws Exception {
-        mockMvc.perform(options("/api/campaigns")
-                        .header("Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app")
-                        .header("Access-Control-Request-Method", "GET"))
-                .andExpect(status().isOk())
-                .andExpect(header().string("Access-Control-Allow-Origin", "https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app"));
+    @Order(18)
+    void optionsPreflightFromUnapprovedOriginDoesNotAllowCors() throws Exception {
+        mockMvc.perform(options("/api/auth/login")
+                        .header("Origin", "https://malicious-unapproved-site.com")
+                        .header("Access-Control-Request-Method", "POST"))
+                .andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
     }
 
     @Test
-    @Order(16)
-    void optionsPreflightFromUnapprovedOriginDoesNotAllowCors() throws Exception {
-        mockMvc.perform(options("/api/auth/register")
-                        .header("Origin", "https://malicious-unapproved-site.com")
+    @Order(19)
+    void optionsPreflightFromUnapprovedVercelProjectDoesNotAllowCors() throws Exception {
+        mockMvc.perform(options("/api/auth/login")
+                        .header("Origin", "https://otherproject-aman-kumar-s-projects9.vercel.app")
                         .header("Access-Control-Request-Method", "POST"))
                 .andExpect(header().doesNotExist("Access-Control-Allow-Origin"));
     }

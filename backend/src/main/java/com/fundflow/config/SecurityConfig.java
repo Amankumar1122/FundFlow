@@ -13,11 +13,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -29,6 +30,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
+@EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Bean
@@ -37,15 +40,16 @@ public class SecurityConfig {
             JwtAuthenticationFilter jwtFilter,
             ObjectMapper objectMapper,
             CorsConfigurationSource corsConfigurationSource) throws Exception {
+
         return http
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource))
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .exceptionHandling(exceptions -> exceptions
+            .exceptionHandling(handling -> handling
                 .authenticationEntryPoint((request, response, exception) -> {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setContentType("application/json");
-                    objectMapper.writeValue(response.getOutputStream(), Map.of("message", "Authentication is required"));
+                    objectMapper.writeValue(response.getOutputStream(), Map.of("message", "Authentication required"));
                 })
                 .accessDeniedHandler((request, response, exception) -> {
                     response.setStatus(HttpStatus.FORBIDDEN.value());
@@ -85,29 +89,45 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource(
             @Value("${app.cors.allowed-origin:http://localhost:5173}") String origin,
-            @Value("${app.cors.allowed-origins:}") String originsConfig) {
+            @Value("${app.cors.allowed-origins:}") String originsConfig,
+            @Value("${app.cors.allowed-origin-patterns:}") String patternsConfig) {
 
         Set<String> origins = new LinkedHashSet<>();
 
-        // 1. Required deployed Vercel frontend origin
+        // 1. Current production Vercel frontend origin
+        origins.add("https://fundflow-3c0sh4pr9-aman-kumar-s-projects9.vercel.app");
+
+        // 2. Previous and known deployed Vercel frontend origins
+        origins.add("https://fundflow-5uem2wox1-aman-kumar-s-projects9.vercel.app");
         origins.add("https://fundflow-luiunlv77-aman-kumar-s-projects9.vercel.app");
 
-        // 2. Permanent production Vercel project and team domains
+        // 3. Permanent production Vercel project and team domains
         origins.add("https://fundflow.vercel.app");
         origins.add("https://fundflow-aman-kumar-s-projects9.vercel.app");
 
-        // 3. Local development origins
+        // 4. Local development origins
         origins.add("http://localhost:5173");
         origins.add("http://localhost:3000");
         origins.add("http://localhost:4173");
         origins.add("http://127.0.0.1:5173");
 
-        // 4. Any additional origins configured via environment variables / properties
+        // 5. Any additional explicit origins configured via environment variables / properties
         parseAndAddOrigins(origins, origin);
         parseAndAddOrigins(origins, originsConfig);
 
+        // 6. Origin patterns for durable dynamic preview deployments (scoped strictly to FundFlow project)
+        Set<String> patterns = new LinkedHashSet<>();
+        patterns.add("https://fundflow-*-aman-kumar-s-projects9.vercel.app");
+        patterns.add("https://fundflow-*.vercel.app");
+        patterns.add("https://fundflow-aman-kumar-s-projects9.vercel.app");
+        patterns.add("https://fundflow.vercel.app");
+        patterns.add("http://localhost:[*]");
+        patterns.add("http://127.0.0.1:[*]");
+        parseAndAddOrigins(patterns, patternsConfig);
+
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(new ArrayList<>(origins));
+        config.setAllowedOriginPatterns(new ArrayList<>(patterns));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of(
             "Authorization",

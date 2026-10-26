@@ -17,34 +17,40 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-   private final JwtService jwtService;
-   private final UserDetailsService userDetailsService;
+    private final JwtService jwtService;
+    private final UserDetailsService userDetailsService;
 
-   public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
-      this.jwtService = jwtService;
-      this.userDetailsService = userDetailsService;
-   }
+    public JwtAuthenticationFilter(JwtService jwtService, UserDetailsService userDetailsService) {
+        this.jwtService = jwtService;
+        this.userDetailsService = userDetailsService;
+    }
 
-   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-      String authorization = request.getHeader("Authorization");
-      if (authorization != null && authorization.startsWith("Bearer ") && SecurityContextHolder.getContext().getAuthentication() == null) {
-         String token = authorization.substring(7);
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        return "OPTIONS".equalsIgnoreCase(request.getMethod());
+    }
 
-         try {
-            String email = this.jwtService.extractSubject(token);
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
-            if (userDetails.isEnabled() && this.jwtService.isTokenValid(token, userDetails.getUsername())) {
-               UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-               authentication.setDetails((new WebAuthenticationDetailsSource()).buildDetails(request));
-               SecurityContextHolder.getContext().setAuthentication(authentication);
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String authorization = request.getHeader("Authorization");
+        if (authorization != null && authorization.startsWith("Bearer ") && SecurityContextHolder.getContext().getAuthentication() == null) {
+            String token = authorization.substring(7);
+
+            try {
+                String email = this.jwtService.extractSubject(token);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
+                if (userDetails.isEnabled() && this.jwtService.isTokenValid(token, userDetails.getUsername())) {
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+            } catch (IllegalArgumentException | JwtException | UsernameNotFoundException e) {
+                SecurityContextHolder.clearContext();
             }
-         } catch (IllegalArgumentException | JwtException var9) {
-            SecurityContextHolder.clearContext();
-         } catch (UsernameNotFoundException var10) {
-            SecurityContextHolder.clearContext();
-         }
-      }
+        }
 
-      filterChain.doFilter(request, response);
-   }
+        filterChain.doFilter(request, response);
+    }
 }
